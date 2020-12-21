@@ -1,53 +1,55 @@
 require('./config/config');
 
-const express = require('express')
-const app = express()
+const express = require('express');
+const mongoose = require('mongoose');
+
+const app = express();
+
 const bodyParser = require('body-parser');
 
-
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false }))
 
 // parse application/json
-app.use(bodyParser.json());
+app.use(bodyParser.json())
+
+app.use(require('./routes/usuario'));
 
 
 
-app.get('/usuario', function(req, res) {
-    res.json('Get usuarios');
+//cafe nombre de base de datos
+
+
+//conexion local
+/* mongoose.connect('mongodb://localhost:27017/cafe', { useNewUrlParser: true, useCreateIndex: true },
+    (err, res) => {
+        if (err) throw err;
+        console.log("Base de datos online");
+    }); */
+
+
+
+
+//const MongoClient = require('mongodb').MongoClient; // para la capa free
+
+mongoose.connect(process.env.URLDB, { useNewUrlParser: true }, (err, res) => {
+    if (err) throw err;
+    console.log("Base de datos online");
 });
 
-app.post('/usuario', function(req, res) {
-    let bodyPost = req.body;
-
-    if (bodyPost.nombre === undefined) {
-        res.status(400).json({
-            ok: false,
-            mensaje: 'El nombre es necesario'
-        });
-    } else {
-        res.json({
-            persona: bodyPost
-        });
-    }
 
 
-});
+/*
+//ok, conexion
+mongoose.connect(process.env.URLDB).then(() => {
+    console.log("Base de datos conectada");
+}).catch((err) => {
+    console.log("No se pudo establecer la conexion a la BD ERROR! ", err);
+});*/
 
-app.put('/usuario/:id', function(req, res) {
-    let idUser = req.params.id;
-    //res.json('Put usuarios');
-    res.json({
-        idUser
-    });
-});
 
-app.delete('/usuario', function(req, res) {
-    res.json('Delete usuarios');
-});
 
 
 app.listen(process.env.PORT, () => {
-    console.log('Escuchando puerto', 3000);
-
+    console.log('Escuchando puerto: ', process.env.PORT);
 });

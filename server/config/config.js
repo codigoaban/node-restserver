@@ -1,5 +1,27 @@
-//===========================
-//Puerto configuracion
-//===========================
+// ============================
+//  Puerto
+// ============================
+process.env.PORT = process.env.PORT || 3000;
 
-process.env.PORT = process.env.PORT || 3000; //le asiga el puerto que encuentre en produccion, si no el puerto 3000(en desarrollo)
+
+// ============================
+//  Entorno
+// ============================
+
+//process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
+process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
+
+// ============================
+//  Base de datos
+// ============================
+
+let urlDB;
+
+if (process.env.NODE_ENV === 'dev') {
+    urlDB = 'mongodb://localhost:27017/cafe';
+} else {
+    urlDB = 'mongodb+srv://userMongo:slhxMlv0nGa6GzdP@cluster0.hd5o1.mongodb.net/cafe';
+}
+
+//process.env.URLDB = urlDB;
+process.env.URLDB = urlDB;
