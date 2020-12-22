@@ -6,12 +6,21 @@ const _ = require('underscore');
 
 
 const Usuario = require('../models/usuario');
+const { verificaToken, verficaAdmin_Role } = require('../middlewares/autenticacion');
 
 
 const app = express();
 
 //listar usuarios de la base de datos
-app.get('/usuario', function(req, res) {
+//verificaToken es el middleware que se va aa ejecutar cuandos e quiera revisar esa ruta
+app.get('/usuario', verificaToken, (req, res) => {
+
+    /*return res.json({
+        usuario: req.usuario, // imprimiendo todo el objeto
+        nombre: req.usuario.nombre,
+        email: req.usuario.email
+
+    });*/
 
     //paginacion desde la pagina actual o si no desde cero
     let desde = req.query.desde || 0;
@@ -53,7 +62,8 @@ app.get('/usuario', function(req, res) {
 
 
 //registrar un usuario
-app.post('/usuario', function(req, res) {
+//app.post('/usuario', function(req, res) {
+app.post('/usuario', [verificaToken, verficaAdmin_Role], function(req, res) {
 
     let body = req.body;
 
@@ -63,6 +73,7 @@ app.post('/usuario', function(req, res) {
         password: bcrypt.hashSync(body.password, 10),
         role: body.role
     });
+
 
     usuario.save((err, usuarioDB) => {
         if (err) {
@@ -87,7 +98,8 @@ app.post('/usuario', function(req, res) {
 });
 
 //actualizacion de un registro
-app.put('/usuario/:id', function(req, res) {
+//app.put('/usuario/:id', function(req, res) {
+app.put('/usuario/:id', [verificaToken, verficaAdmin_Role], function(req, res) {
 
     let id = req.params.id;
 
@@ -118,7 +130,9 @@ app.put('/usuario/:id', function(req, res) {
 
 });
 
-app.delete('/usuario/:id', function(req, res) {
+
+//app.delete('/usuario/:id', function(req, res) {
+app.delete('/usuario/:id', [verificaToken, verficaAdmin_Role], function(req, res) {
     // res.json('delete Usuario');
     let id = req.params.id;
 
@@ -126,7 +140,7 @@ app.delete('/usuario/:id', function(req, res) {
         estado: false
     }
 
-    Usuario.findByIdAndUpdate(id, cambiaEstado, { new: true }, (err, usuarioDB) => {
+    Usuario.findByIdAndUpdate(id, cambiaEstado, { new: true }, (err, usuarioBorrado) => {
 
         if (err) {
             return res.status(400).json({
