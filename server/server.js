@@ -2,7 +2,7 @@ require('./config/config');
 
 const express = require('express');
 const mongoose = require('mongoose');
-
+const path = require('path');
 const app = express();
 
 const bodyParser = require('body-parser');
@@ -14,15 +14,17 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 
+//hablitar la carpeta public
+app.use(express.static(path.resolve(__dirname, '../public')));
+
 //configuracion global de rutas
 app.use(require('./routes/index'));
 
 
 
 
+
 //cafe nombre de base de datos
-
-
 //conexion local
 /* mongoose.connect('mongodb://localhost:27017/cafe', { useNewUrlParser: true, useCreateIndex: true },
     (err, res) => {
