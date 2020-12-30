@@ -62,7 +62,37 @@ let verficaAdmin_Role = (req, res, next) => {
 
 }
 
+
+//====================
+//Verifica Token de la Imagen - MiddleWare
+//====================
+
+let verficaTokenImg = (req, res, next) => {
+    let token = req.query.token;
+
+    /*res.json({
+        token: token
+    })*/
+
+    jwt.verify(token, process.env.SEED, (err, decoded) => {
+
+        if (err) {
+            return res.status(401).json({
+                ok: false,
+                err: {
+                    message: 'Token no válido'
+                }
+            });
+        }
+
+        req.usuario = decoded.usuario;
+        next();
+    });
+
+}
+
 module.exports = {
     verificaToken,
-    verficaAdmin_Role
+    verficaAdmin_Role,
+    verficaTokenImg
 }
